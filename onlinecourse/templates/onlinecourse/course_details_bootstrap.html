@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ course.name }}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'onlinecourse:index' %}">Home</a>
+            <div class="ml-auto">
+                {% if user.is_authenticated %}
+                    <span class="navbar-text mr-3">{{ user.first_name }} ({{ user.username }})</span>
+                    <a class="btn btn-outline-secondary" href="{% url 'onlinecourse:logout' %}">Logout</a>
+                {% else %}
+                    <a class="btn btn-primary" href="{% url 'onlinecourse:login' %}">Login</a>
+                    <a class="btn btn-link" href="{% url 'onlinecourse:registration' %}">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="container py-4">
+        <h1 class="mb-4">{{ course.name }}</h1>
+        {% if course.lesson_set.all %}
+            {% for lesson in course.lesson_set.all %}
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5 class="mb-0">Lesson {{ lesson.order|add:1 }}: {{ lesson.title }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">{{ lesson.content }}</p>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="alert alert-info">No lessons are available for this course yet.</p>
+            {% endfor %}
+        {% else %}
+            <p class="alert alert-info">No lessons are available for this course yet.</p>
+        {% endif %}
+    </main>
+</body>
+</html>
